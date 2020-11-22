@@ -63,7 +63,7 @@ def welcome():
         f"/api/v1.0/start/end<br/>"
     )
 
-@app.route("/api/v1.0/precip_info")
+@app.route("/precip_info")
 def precip_info():
     session = Session(engine)
     results = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').all()
@@ -79,7 +79,7 @@ def precip_info():
 
     return jsonify(all_precip_rows)    
 
-@app.route("/api/v1.0/stations")
+@app.route("/stations")
 def stations():
     session = Session(engine)
     results = session.query(Station.station, Station.name, Station.latitude, Station.longitude, Station.elevation).all()
@@ -97,7 +97,7 @@ def stations():
         
     return jsonify(all_station_rows)
 
-@app.route("/api/v1.0/tobs")
+@app.route("/tobs")
 def tobs():
     session = Session(engine)
     results = session.query(Measurement.date, Measurement.tobs).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').filter(Measurement.station=='USC00519281').all()
@@ -114,8 +114,8 @@ def tobs():
     return jsonify(all_tobs_rows)    
 
 
-@app.route("/api/v1.0/startdate")
-def start():
+@app.route("/startdate")
+def startdate():
     session = Session(engine)
     startdate = '2016-08-23'
     results=session.query(Measurement).filter(Measurement.station=='USC00519281').filter(Measurement.date >=startdate)
@@ -134,8 +134,8 @@ def start():
 
     return jsonify(all_tobs_rows)    
 
-@app.route("/api/v1.0/startdate/enddate")
-def start_end():
+@app.route("/startenddate")
+def startenddate():
 
     session = Session(engine)
     startdate = '2016-08-23'
