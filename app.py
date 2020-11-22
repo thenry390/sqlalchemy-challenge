@@ -113,11 +113,9 @@ def tobs():
 
     return jsonify(all_tobs_rows)    
 
-
-@app.route("/startdate")
-def startdate():
+@app.route("/startdate/<startdate>")
+def startdate(startdate):
     session = Session(engine)
-    startdate = '2016-08-23'
     results=session.query(Measurement).filter(Measurement.station=='USC00519281').filter(Measurement.date >=startdate)
     query_max = results.with_entities(func.max(Measurement.tobs)).all()
     query_min = results.with_entities(func.min(Measurement.tobs)).all()
@@ -131,15 +129,14 @@ def startdate():
     tobs_dict["min"] = query_min
     tobs_dict["avg"] = query_avg
     all_tobs_rows.append(tobs_dict)
+    
 
     return jsonify(all_tobs_rows)    
 
-@app.route("/startenddate")
-def startenddate():
+@app.route("/startdate_enddate/<startdate>/<enddate>")
+def startdate_enddate(startdate, enddate):
 
     session = Session(engine)
-    startdate = '2016-08-23'
-    enddate='2017-08-23'
     results=session.query(Measurement).filter(Measurement.station=='USC00519281').filter(Measurement.date >=startdate).filter(Measurement.date <= enddate)
     query_max = results.with_entities(func.max(Measurement.tobs)).all()
     query_min = results.with_entities(func.min(Measurement.tobs)).all()
