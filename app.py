@@ -65,7 +65,6 @@ def welcome():
 
 @app.route("/api/v1.0/precip_info")
 def precip_info():
-
     session = Session(engine)
     results = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').all()
     session.close()
@@ -100,34 +99,43 @@ def stations():
 
 @app.route("/api/v1.0/tobs")
 def tobs():
-
     session = Session(engine)
-    results = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').all()
+    results = session.query(Measurement.date, Measurement.tobs).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').filter(Measurement.station=='USC00519281').all()
     session.close()
 
     # Create a dictionary from the row data and append to a list of all_passengers
-    all_precip_rows = []
-    for date, prcp in results:
+    all_tobs_rows = []
+    for date, tobs in results:
         precip_dict = {}
         precip_dict["date"] = date
-        precip_dict["prcp"] = prcp
-        all_precip_rows.append(precip_dict)
+        precip_dict["tobs"] = tobs
+        all_tobs_rows.append(precip_dict)
 
-    return jsonify(all_precip_rows)    
+    return jsonify(all_tobs_rows)    
 
 
 @app.route("/api/v1.0/startdate")
 def start():
+    session = Session(engine)
+    results = session.query(Measurement.date, Measurement.tobs).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').filter(Measurement.station=='USC00519281').all()
+    session.close()
 
-    return jsonify(all_names)
+    # Create a dictionary from the row data and append to a list of all_passengers
+    all_tobs_rows = []
+    for date, tobs in results:
+        precip_dict = {}
+        precip_dict["date"] = date
+        precip_dict["tobs"] = tobs
+        all_tobs_rows.append(precip_dict)
 
+    return jsonify(all_tobs_rows)    
 
 @app.route("/api/v1.0/startdate/enddate")
 def startend():
 
-    return jsonify(all_names)
+    return jsonify()
 
-
+'''
 def names():
     # Create our session (link) from Python to the DB
     session = Session(engine)
