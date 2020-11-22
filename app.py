@@ -117,63 +117,46 @@ def tobs():
 @app.route("/api/v1.0/startdate")
 def start():
     session = Session(engine)
-    results = session.query(Measurement.date, Measurement.tobs).filter(Measurement.date >='2016-08-23').filter(Measurement.date <= '2017-08-23').filter(Measurement.station=='USC00519281').all()
+    startdate = '2016-08-23'
+    results=session.query(Measurement).filter(Measurement.station=='USC00519281').filter(Measurement.date >=startdate)
+    query_max = results.with_entities(func.max(Measurement.tobs)).all()
+    query_min = results.with_entities(func.min(Measurement.tobs)).all()
+    query_avg = results.with_entities(func.avg(Measurement.tobs)).all()   
     session.close()
 
     # Create a dictionary from the row data and append to a list of all_passengers
     all_tobs_rows = []
-    for date, tobs in results:
-        precip_dict = {}
-        precip_dict["date"] = date
-        precip_dict["tobs"] = tobs
-        all_tobs_rows.append(precip_dict)
+    tobs_dict = {}
+    tobs_dict["max"] = query_max
+    tobs_dict["min"] = query_min
+    tobs_dict["avg"] = query_avg
+    all_tobs_rows.append(tobs_dict)
 
     return jsonify(all_tobs_rows)    
 
 @app.route("/api/v1.0/startdate/enddate")
-def startend():
+def start_end():
 
-    return jsonify()
-
-'''
-def names():
-    # Create our session (link) from Python to the DB
     session = Session(engine)
-
-    """Return a list of all passenger names"""
-    # Query all passengers
-    results = session.query(Passenger.name).all()
-
-    session.close()
-
-    # Convert list of tuples into normal list
-    all_names = list(np.ravel(results))
-
-    return jsonify(all_names)
-
-
-@app.route("/api/v1.0/passengers")
-def passengers():
-    # Create our session (link) from Python to the DB
-    session = Session(engine)
-
-    """Return a list of passenger data including the name, age, and sex of each passenger"""
-    # Query all passengers
-    results = session.query(Passenger.name, Passenger.age, Passenger.sex).all()
+    startdate = '2016-08-23'
+    enddate='2017-08-23'
+    results=session.query(Measurement).filter(Measurement.station=='USC00519281').filter(Measurement.date >=startdate).filter(Measurement.date <= enddate)
+    query_max = results.with_entities(func.max(Measurement.tobs)).all()
+    query_min = results.with_entities(func.min(Measurement.tobs)).all()
+    query_avg = results.with_entities(func.avg(Measurement.tobs)).all()   
 
     session.close()
 
     # Create a dictionary from the row data and append to a list of all_passengers
-    all_passengers = []
-    for name, age, sex in results:
-        passenger_dict = {}
-        passenger_dict["name"] = name
-        passenger_dict["age"] = age
-        passenger_dict["sex"] = sex
-        all_passengers.append(passenger_dict)
+    all_tobs_rows = []
+    tobs_dict = {}
+    tobs_dict["max"] = query_max
+    tobs_dict["min"] = query_min
+    tobs_dict["avg"] = query_avg
+    all_tobs_rows.append(tobs_dict)
 
-    return jsonify(all_passengers)
-'''
+    return jsonify(all_tobs_rows)    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
